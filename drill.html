@@ -16,7 +16,7 @@ span { font-size: 150%; }
 .hitbtn { width: 33%; height: 100%; border: 1px solid Black; float: left; box-sizing: border-box; text-align: center;
   font-size: 20rem; -webkit-flex: 1 1 auto; display: flex; justify-content: center; -webkit-align-items: center; align-items: center;
 }
-.series { display: none; }
+.show-on-complete { display: none; }
 </style>
 
 <script>
@@ -34,9 +34,8 @@ function recount(btn) {
 
   if (newround == 21) {
     $('#rounds').html(20);
-    $('.hitbox').hide();
-    $('#header').hide();
-    $('.series').show();
+    $('.hide-on-complete').hide();
+    $('.show-on-complete').show();
   }
 
   return false;
@@ -44,25 +43,31 @@ function recount(btn) {
 </script>
 <body>
 
-<div id="header">
+<div id="header" class="hide-on-complete">
   <div class="col-sm-12">Throw from: <span id="meters">10</span> m</div>
 </div>
 
-<div class="col-sm-12 hitbox">
+<div class="col-sm-12 hitbox hide-on-complete">
   <div class="hitbtn btn-default" onclick="return recount(this);">0</div>
   <div class="hitbtn btn-danger" onclick="return recount(this);">1</div>
   <div class="hitbtn btn-warning" onclick="return recount(this);">2</div>
 </div>
-<div class="col-sm-12 hitbox">
+<div class="col-sm-12 hitbox hide-on-complete">
   <div class="hitbtn btn-info" onclick="return recount(this);">3</div>
   <div class="hitbtn btn-primary" onclick="return recount(this);">4</div>
   <div class="hitbtn btn-success" onclick="return recount(this);">5</div>
 </div>
 
 <div id="footer">
-  <div class="col-sm-12">Round: <span id="rounds">1</span> / 20</div>
+  <div class="col-sm-12 hide-on-complete">Round: <span id="rounds">1</span> / 20</div>
   <div class="col-sm-12">Points: <span id="points">0</span></div>
-  <div class="col-sm-12 series">Series: <span id="series"></span></div>
+  <div class="col-sm-12 show-on-complete">Series: <span id="series"></span></div>
+  <div class="col-sm-12 show-on-complete"><a href="drill.html">New game</a></div>
+  <div class="col-sm-12 show-on-complete">
+    App by <a href="https://github.com/tuminoid">Tumi</a> |
+    Idea by JYLY |
+    Code at <a href="https://github.com/tuminoid/puttdrill-app">Github</a>
+  </div>
 </div>
 
 </body>
