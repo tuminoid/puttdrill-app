@@ -8,67 +8,183 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 <style>
-body, html { height: 100%; padding: 0; margin: 0; }
-span { font-size: 150%; }
-#header { text-align: center; font-weight: bold; font-size: 8rem; }
-#footer { text-align: center; font-weight: bold; font-size: 8rem; }
-.hitbox { height: 30% !important; }
-.hitbtn { width: 33%; height: 100%; border: 1px solid Black; float: left; box-sizing: border-box; text-align: center;
-  font-size: 20rem; -webkit-flex: 1 1 auto; display: flex; justify-content: center; -webkit-align-items: center; align-items: center;
+body, html {
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
-.show-on-complete { display: none; }
+
+footer {
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.big {
+  font-size: 150%;
+}
+
+.flex {
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid Black;
+  text-align: center;
+  -webkit-flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.gamemodebtn {
+  height: 100%;
+  font-size: 20rem;
+}
+
+.big-and-center {
+  text-align: center;
+  font-weight: bold;
+  font-size: 8rem;
+}
+
+.hitbox {
+  height: 30% !important;
+}
+
+.hitbtn {
+  width: 33%;
+  float: left;
+  font-size: 20rem;
+}
 </style>
 
 <script>
-function recount(btn) {
+var basegame = 0;
+function setGameMode(base) {
+  basegame = base;
+  $('#meters').html(10 + base);
+  for (i = (5 + base); i <= (10 + base); i++)
+    $('#dist' + (i - 5 - base)).html(i);
+  $('#gameselect').hide();
+  $('#gamescreen').show();
+  return false;
+}
+
+function countPoints(btn) {
   hits = parseInt($(btn).html());
   dist = parseInt($('#meters').html());
-  points = dist * hits;
-  newpoints = parseInt($('#points').html()) + points;
+  points = (dist - basegame) * hits;
+  newpoints = parseInt($('.points').html()) + points;
   newround = parseInt($('#rounds').html()) + 1;
-  newdist = 5 + hits;
-  $('#points').html(newpoints);
+  newdist = 5 + basegame + hits;
+  $('.points').html(newpoints);
   $('#meters').html(newdist);
   $('#rounds').html(newround);
   $('#series').html($('#series').html() + " " + hits);
 
-  if (newround == 21) {
-    $('#rounds').html(20);
-    $('.hide-on-complete').hide();
-    $('.show-on-complete').show();
+  updateStats(dist, hits);
+
+  if (newround > 20) {
+    $('#gamescreen').hide();
+    $('#results').show();
+    $('#credits').show();
   }
 
   return false;
 }
+
+function updateStats(dist, hits) {
+  idx = dist - 5 - basegame;
+  prevhits = parseInt($('#hits' + idx).html());
+  prevthrows = parseInt($('#throws' + idx).html());
+  newhits = prevhits + hits;
+  newthrows = prevthrows + 5;
+  $('#hits' + idx).html(newhits);
+  $('#throws' + idx).html(newthrows);
+  if (newthrows > 0)
+    $('#percent' + idx).html(parseInt(newhits * 1000 / newthrows) / 10);
+}
 </script>
 <body>
 
-<div id="header" class="hide-on-complete">
-  <div class="col-sm-12">Throw from: <span id="meters">10</span> m</div>
+<div id="gameselect" class="big-and-center hitbox">
+  <div class="btn-default col-sm-12">Choose starting distance:</div>
+  <div class="flex btn-info col-sm-12 gamemodebtn" onclick="return setGameMode(0);">10 meters</div>
+  <div class="flex btn-primary col-sm-12 gamemodebtn" onclick="return setGameMode(5);">15 meters</div>
 </div>
 
-<div class="col-sm-12 hitbox hide-on-complete">
-  <div class="hitbtn btn-default" onclick="return recount(this);">0</div>
-  <div class="hitbtn btn-danger" onclick="return recount(this);">1</div>
-  <div class="hitbtn btn-warning" onclick="return recount(this);">2</div>
-</div>
-<div class="col-sm-12 hitbox hide-on-complete">
-  <div class="hitbtn btn-info" onclick="return recount(this);">3</div>
-  <div class="hitbtn btn-primary" onclick="return recount(this);">4</div>
-  <div class="hitbtn btn-success" onclick="return recount(this);">5</div>
+<div id="gamescreen" class="big-and-center" style="display: none;">
+  <div id="header">
+    <div class="col-sm-12">Throw from: <span class="big" id="meters">X</span> m</div>
+  </div>
+
+  <div class="col-sm-12 hitbox">
+    <div class="hitbtn flex btn-default" onclick="return countPoints(this);">0</div>
+    <div class="hitbtn flex btn-danger" onclick="return countPoints(this);">1</div>
+    <div class="hitbtn flex btn-warning" onclick="return countPoints(this);">2</div>
+  </div>
+  <div class="col-sm-12 hitbox">
+    <div class="hitbtn flex btn-info" onclick="return countPoints(this);">3</div>
+    <div class="hitbtn flex btn-primary" onclick="return countPoints(this);">4</div>
+    <div class="hitbtn flex btn-success" onclick="return countPoints(this);">5</div>
+  </div>
+
+  <div id="foooter" class="col-sm-12">
+    <div class="col-sm-12">Round: <span class="big" id="rounds">1</span> / 20</div>
+    <div class="col-sm-12">Points: <span class="points big">0</span></div>
+  </div>
 </div>
 
-<div id="footer">
-  <div class="col-sm-12 hide-on-complete">Round: <span id="rounds">1</span> / 20</div>
-  <div class="col-sm-12">Points: <span id="points">0</span></div>
-  <div class="col-sm-12 show-on-complete">Series: <span id="series"></span></div>
-  <div class="col-sm-12 show-on-complete"><a href="drill.html">New game</a></div>
-  <div class="col-sm-12 show-on-complete">
+<div id="results" class="big-and-center" style="display: none;">
+  <div class="col-sm-12">Points: <span class="points big">0</span></div>
+  <div class="col-sm-12"><a href="drill.html">New game</a></div>
+  <div class="col-sm-12">Series: <span id="series" class="big"></span></div>
+
+  <div class="col-sm-12">
+    <div class="col-sm-3"><span id="dist0">X</span> m</div>
+    <div class="col-sm-2"><span id="hits0">0</span></div><div class="col-sm-1">/</div>
+    <div class="col-sm-2"><span id="throws0">0</span></div><div class="col-sm-1">=</div>
+    <div class="col-sm-2"><span id="percent0">0</span></div><div class="col-sm-1">%</div>
+  </div>
+  <div class="col-sm-12">
+    <div class="col-sm-3"><span id="dist1">X</span> m</div>
+    <div class="col-sm-2"><span id="hits1">0</span></div><div class="col-sm-1">/</div>
+    <div class="col-sm-2"><span id="throws1">0</span></div><div class="col-sm-1">=</div>
+    <div class="col-sm-2"><span id="percent1">0</span></div><div class="col-sm-1">%</div>
+  </div>
+  <div class="col-sm-12">
+    <div class="col-sm-3"><span id="dist2">X</span> m</div>
+    <div class="col-sm-2"><span id="hits2">0</span></div><div class="col-sm-1">/</div>
+    <div class="col-sm-2"><span id="throws2">0</span></div><div class="col-sm-1">=</div>
+    <div class="col-sm-2"><span id="percent2">0</span></div><div class="col-sm-1">%</div>
+  </div>
+  <div class="col-sm-12">
+    <div class="col-sm-3"><span id="dist3">X</span> m</div>
+    <div class="col-sm-2"><span id="hits3">0</span></div><div class="col-sm-1">/</div>
+    <div class="col-sm-2"><span id="throws3">0</span></div><div class="col-sm-1">=</div>
+    <div class="col-sm-2"><span id="percent3">0</span></div><div class="col-sm-1">%</div>
+  </div>
+  <div class="col-sm-12">
+    <div class="col-sm-3"><span id="dist4">X</span> m</div>
+    <div class="col-sm-2"><span id="hits4">0</span></div><div class="col-sm-1">/</div>
+    <div class="col-sm-2"><span id="throws4">0</span></div><div class="col-sm-1">=</div>
+    <div class="col-sm-2"><span id="percent4">0</span></div><div class="col-sm-1">%</div>
+  </div>
+  <div class="col-sm-12">
+    <div class="col-sm-3"><span id="dist5">X</span> m</div>
+    <div class="col-sm-2"><span id="hits5">0</span></div><div class="col-sm-1">/</div>
+    <div class="col-sm-2"><span id="throws5">0</span></div><div class="col-sm-1">=</div>
+    <div class="col-sm-2"><span id="percent5">0</span></div><div class="col-sm-1">%</div>
+  </div>
+</div>
+
+<footer>
+  <div class="col-sm-12">
     App by <a href="https://github.com/tuminoid">Tumi</a> |
     Idea by JYLY |
     Code at <a href="https://github.com/tuminoid/puttdrill-app">Github</a>
   </div>
-</div>
+</footer>
 
 </body>
 </html>
