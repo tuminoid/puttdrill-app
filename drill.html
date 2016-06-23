@@ -1,11 +1,11 @@
 <!doctype html>
 <html>
-<title>Putt drill</title>
+<title>JYLY Putt drill</title>
 <meta charset="utf-8">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 <style>
 body, html { height: 100%; padding: 0; margin: 0; }
@@ -43,30 +43,32 @@ function recount(btn) {
 </script>
 <body>
 
-<div id="header" class="hide-on-complete">
-  <div class="col-sm-12">Throw from: <span id="meters">10</span> m</div>
-</div>
+<div id="container">
+  <div id="header" class="hide-on-complete">
+    <div class="col-sm-12">Throw from: <span id="meters">10</span> m</div>
+  </div>
 
-<div class="col-sm-12 hitbox hide-on-complete">
-  <div class="hitbtn btn-default" onclick="return recount(this);">0</div>
-  <div class="hitbtn btn-danger" onclick="return recount(this);">1</div>
-  <div class="hitbtn btn-warning" onclick="return recount(this);">2</div>
-</div>
-<div class="col-sm-12 hitbox hide-on-complete">
-  <div class="hitbtn btn-info" onclick="return recount(this);">3</div>
-  <div class="hitbtn btn-primary" onclick="return recount(this);">4</div>
-  <div class="hitbtn btn-success" onclick="return recount(this);">5</div>
-</div>
+  <div class="col-sm-12 hitbox hide-on-complete">
+    <div class="hitbtn btn-default" onclick="return recount(this);">0</div>
+    <div class="hitbtn btn-danger" onclick="return recount(this);">1</div>
+    <div class="hitbtn btn-warning" onclick="return recount(this);">2</div>
+  </div>
+  <div class="col-sm-12 hitbox hide-on-complete">
+    <div class="hitbtn btn-info" onclick="return recount(this);">3</div>
+    <div class="hitbtn btn-primary" onclick="return recount(this);">4</div>
+    <div class="hitbtn btn-success" onclick="return recount(this);">5</div>
+  </div>
 
-<div id="footer">
-  <div class="col-sm-12 hide-on-complete">Round: <span id="rounds">1</span> / 20</div>
-  <div class="col-sm-12">Points: <span id="points">0</span></div>
-  <div class="col-sm-12 show-on-complete">Series: <span id="series"></span></div>
-  <div class="col-sm-12 show-on-complete"><a href="drill.html">New game</a></div>
-  <div class="col-sm-12 show-on-complete">
-    App by <a href="https://github.com/tuminoid">Tumi</a> |
-    Idea by JYLY |
-    Code at <a href="https://github.com/tuminoid/puttdrill-app">Github</a>
+  <div id="footer">
+    <div class="col-sm-12 hide-on-complete">Round: <span id="rounds">1</span> / 20</div>
+    <div class="col-sm-12">Points: <span id="points">0</span></div>
+    <div class="col-sm-12 show-on-complete">Series: <span id="series"></span></div>
+    <div class="col-sm-12 show-on-complete"><a href="drill.html">New game</a></div>
+    <div class="col-sm-12 show-on-complete">
+      App by <a href="https://github.com/tuminoid">Tumi</a> |
+      Idea by JYLY |
+      Code at <a href="https://github.com/tuminoid/puttdrill-app">Github</a>
+    </div>
   </div>
 </div>
 
