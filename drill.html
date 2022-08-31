@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<title>Putt drill</title>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<style>
+body, html { height: 100%; padding: 0; margin: 0; }
+#main { height: 100%; margin-top: 10%; }
+header { text-align: center; font-weight: bold; font-size: 8rem; }
+footer { text-align: center; font-weight: bold; font-size: 8rem; }
+span { font-size: 150%; }
+.hitbox { height: 30% !important; }
+.hitbtn { width: 33%; height: 100%; border: 1px solid Black; float: left; box-sizing: border-box; text-align: center; font-size: 20rem; padding-top: 10rem; }
+</style>
+
+<script>
+function recount(btn) {
+  hits = parseInt($(btn).html());
+  dist = parseInt($('#meters').html());
+  points = dist * hits;
+  newpoints = parseInt($('#points').html()) + points
+  newround = parseInt($('#rounds').html()) + 1;
+  newdist = 5 + hits;
+  $('#points').html(newpoints);
+  $('#meters').html(newdist);
+  $('#rounds').html(newround);
+
+  if (newround == 21) {
+    $('.hitbox').hide();
+    $('#rounds').html(20);
+    $('header').hide();
+  }
+
+  return false;
+}
+</script>
+<body>
+
+<div id="main">
+<header>
+  <div class="col-sm-12">Throw from: <span id="meters">10</span> m</div>
+</header>
+
+<div class="col-sm-12 hitbox">
+  <div class="hitbtn btn-default" onclick="return recount(this);">0</div>
+  <div class="hitbtn btn-danger" onclick="return recount(this);">1</div>
+  <div class="hitbtn btn-warning" onclick="return recount(this);">2</div>
+</div>
+<div class="col-sm-12 hitbox">
+  <div class="hitbtn btn-info" onclick="return recount(this);">3</div>
+  <div class="hitbtn btn-primary" onclick="return recount(this);">4</div>
+  <div class="hitbtn btn-success" onclick="return recount(this);">5</div>
+</div>
+
+<footer>
+  <div class="col-sm-12">Round: <span id="rounds">1</span> / 20</div>
+  <div class="col-sm-12">Points: <span id="points">0</span></div>
+</footer>
+
+</div>
+</body>
+</html>
