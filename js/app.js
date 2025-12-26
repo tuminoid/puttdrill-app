@@ -22,7 +22,6 @@ class PuttDrill {
             meters: document.getElementById('meters'),
             rounds: document.getElementById('rounds'),
             points: document.getElementById('points'),
-            finalSeries: document.getElementById('final-series'),
             finalPoints: document.getElementById('final-points'),
             leaderboardContext: document.getElementById('leaderboard-context'),
             highScoreList: document.getElementById('high-score-list'),
@@ -58,7 +57,6 @@ class PuttDrill {
     }
 
     onStateChange(prop) {
-        // Auto-persist and auto-render on most changes
         if (prop !== 'completionTimestamp') {
             this.saveState();
             this.render();
@@ -79,7 +77,6 @@ class PuttDrill {
     }
 
     bindEvents() {
-        // Scoring buttons
         document.querySelectorAll('.hitbtn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 if (this.state.isGameOver) return;
@@ -87,11 +84,9 @@ class PuttDrill {
             });
         });
 
-        // Navigation
         document.getElementById('menu-start-btn').addEventListener('click', () => this.resetGame());
         document.getElementById('new-game-btn').addEventListener('click', () => this.resetGame());
 
-        // History Management
         document.getElementById('reset-history-btn').addEventListener('click', () => {
             if (confirm('Clear all history? This cannot be undone.')) {
                 localStorage.removeItem(STORAGE_KEYS.HISTORY);
@@ -121,9 +116,6 @@ class PuttDrill {
 
         if (this.state.isGameOver) {
             this.ui.finalPoints.textContent = this.state.points;
-            const r1 = this.state.series.slice(0, 10).join(' ');
-            const r2 = this.state.series.slice(10, 20).join(' ');
-            this.ui.finalSeries.innerHTML = `<div>${r1}</div><div>${r2}</div>`;
             this.renderLeaderboardContext();
         }
     }
@@ -137,10 +129,11 @@ class PuttDrill {
 
         // Toggle game metadata visibility
         const isGame = viewName === VIEWS.GAME;
+        const isResults = viewName === VIEWS.RESULTS;
         this.ui.areas.header.classList.toggle('d-none', !isGame);
         this.ui.areas.footer.classList.toggle('d-none', !isGame);
 
-        if (isGame) this.render();
+        if (isGame || isResults) this.render();
     }
 
     endGame() {
@@ -151,13 +144,10 @@ class PuttDrill {
     }
 
     resetGame() {
-        // Resetting proxy requires re-assignment of properties to trigger setter
         const fresh = this.getInitialState();
         Object.keys(fresh).forEach(key => this.state[key] = fresh[key]);
         this.switchView(VIEWS.GAME);
     }
-
-    // --- Data Management ---
 
     saveState() {
         localStorage.setItem(STORAGE_KEYS.CURRENT_GAME, JSON.stringify(this.state));
@@ -173,7 +163,7 @@ class PuttDrill {
         history.push({
             date: this.state.completionTimestamp,
             score: this.state.points,
-            series: [...this.state.series] // Copy array
+            series: [...this.state.series]
         });
         localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(history));
         this.updateStatsUI();
@@ -182,8 +172,6 @@ class PuttDrill {
     getHistory() {
         return JSON.parse(localStorage.getItem(STORAGE_KEYS.HISTORY) || '[]');
     }
-
-    // --- UI Rendering Helpers ---
 
     formatDate(dateStr) {
         if (!dateStr) return 'N/A';
@@ -213,21 +201,26 @@ class PuttDrill {
         const myIndex = history.findIndex(g => g.date === this.state.completionTimestamp);
         if (myIndex === -1) return;
 
-        const items = [];
-        const start = Math.max(1, myIndex - 3);
-        const end = Math.min(history.length - 1, myIndex + 3);
+        // Ensure we always show at least 5 items if they exist
+        let start = Math.max(1, myIndex - 2);
+        let end = Math.min(history.length - 1, myIndex + 2);
 
-        // Rank #1
+        // Shift window if near the beginning to show 5 items total (Rank #1 + 4 neighbors)
+        if (start < 4 && history.length > 5) {
+            end = Math.min(history.length - 1, 4);
+        }
+        
+        // Shift window if near the end
+        if (end > history.length - 5 && history.length > 5) {
+            start = Math.max(1, history.length - 5);
+        }
+
+        const items = [];
         items.push(this.renderGameItem(history[0], '#1', myIndex === 0));
         
-        if (start > 1) items.push('<li class="list-group-item d-flex justify-content-start text-muted py-3 ps-3">...</li>');
-
-        // Context
         for (let i = start; i <= end; i++) {
             if (i > 0) items.push(this.renderGameItem(history[i], `#${i + 1}`, i === myIndex));
         }
-
-        if (end < history.length - 1) items.push('<li class="list-group-item d-flex justify-content-start text-muted py-3 ps-3">...</li>');
 
         this.ui.leaderboardContext.innerHTML = items.join('');
     }
@@ -236,11 +229,9 @@ class PuttDrill {
         const history = this.getHistory();
         if (!history.length) return;
 
-        // Top 100
         const top = [...history].sort((a, b) => b.score - a.score).slice(0, 100);
         this.ui.highScoreList.innerHTML = top.map((g, i) => this.renderGameItem(g, `${i + 1}.`)).join('');
 
-        // Full History
         const all = [...history].sort((a, b) => new Date(b.date) - new Date(a.date));
         this.ui.fullHistoryList.innerHTML = all.map(g => this.renderGameItem(g, '')).join('');
     }
