@@ -2,54 +2,46 @@
 
 ## Overview
 
-This is a simple, single-page web application designed to track a disc golf
-putting drill, specifically the "JYLY" drill. It helps users track their
-successful putts from varying distances over the course of 20 rounds.
+This is a modern, single-page web application designed to track the "JYLY" disc
+golf putting drill. It features persistent state management, high score tracking,
+and a mobile-first design.
 
 ## Tech Stack
 
-- **Core:** HTML5, JavaScript (ES5), CSS3.
-- **Libraries (via CDN):**
-  - jQuery 3.0.0
-  - Bootstrap 3.3.6 (CSS & JS)
+- **Core:** HTML5, JavaScript (ES6+), CSS3.
+- **Frameworks:**
+  - Bootstrap 5.3 (via CDN) for UI components and grid.
+- **Storage:** `localStorage` for game state and history.
 
 ## Architecture
 
-The project consists of a single file:
+The project is structured as follows:
 
-- `drill.html`: Contains the markup, styles (embedded CSS), and application
-  logic (embedded JavaScript).
+- `index.html`: The main entry point containing the markup (Menu, Game, Results)
+  and layout.
+- `css/style.css`: Custom styles, including the phone-emulation wrapper for
+  desktop.
+- `js/app.js`: Contains the `PuttDrill` class which handles:
+  - **Routing:** Manages visibility of Menu, Game, and Results views.
+  - **Game Logic:** Scoring, distance calculation (JYLY drill).
+  - **State Management:** Interacting with `localStorage`.
+
+## Game Logic
+
+1. **Input:** User clicks a button (0-5) representing successful putts.
+2. **Scoring:** `Points = Current Distance * Successful Putts`.
+3. **Distance Adjustment:** `New Distance = 5 meters + Successful Putts`.
+4. **Progression:** The game lasts for 20 rounds.
+5. **Persistence:**
+   - **Current Game (`puttdrill_current_game`):** Saved on every input to allow
+     resuming.
+   - **History (`puttdrill_history`):** Array of completed game objects (date,
+     score, series) used for Top 100 and Full History lists.
 
 ## Setup & Running
 
-Since this is a static HTML file with no build process:
-
-1. **Download/Clone** the repository.
-2. **Open** `drill.html` directly in any modern web browser.
-   - *Note:* An internet connection is required initially to load the Bootstrap
-     and jQuery resources from CDNs.
-
-## Game Logic (`recount` function)
-
-The core logic resides in the `recount(btn)` JavaScript function:
-
-1. **Input:** User clicks a button corresponding to the number of successful
-   putts (0-5) for the current round.
-2. **Scoring:** `Points = Current Distance * Successful Putts`.
-3. **Next Distance:** `New Distance = 5 meters + Successful Putts`.
-   - *Example:* 5 hits -> 10m next. 0 hits -> 5m next.
-4. **Progression:**
-   - Increments round counter.
-   - Appends result to the "Series" string.
-5. **Game Over:**
-   - After 20 rounds, the input buttons are hidden (`.hide-on-complete`).
-   - Final score and series summary are displayed (`.show-on-complete`).
-
-## Development Conventions
-
-- **Styles:** Currently using embedded `<style>` blocks and Bootstrap utility
-  classes.
-- **Scripts:** JavaScript is embedded directly in the `<script>` tag within
-  `drill.html`.
-- **External Resources:** Relies on specific versions of jQuery and Bootstrap
-  hosted on CDNs.
+1. **Clone/Download** the repository.
+2. **Run** the application:
+   - **Option A (Make):** Run `make run` and open `http://localhost:8000`.
+   - **Option B (Direct):** Open `index.html` directly in a web browser.
+   - *Requirement:* Internet connection needed for Bootstrap CDN.
