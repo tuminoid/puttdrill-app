@@ -3,6 +3,8 @@
 A simple, offline-capable web application for tracking your disc golf putting
 practice (JYLY drill).
 
+**Live version:** [https://kisakone.eu/](https://kisakone.eu/)
+
 ## Features
 
 - **Track Progress:** Input your successful putts from various distances.

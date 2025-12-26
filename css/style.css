@@ -2,6 +2,7 @@ body, html {
     height: 100%;
     padding: 0;
     margin: 0;
+    overflow: hidden;
 }
 
 .app-wrapper {
@@ -11,14 +12,13 @@ body, html {
     background-color: white;
 }
 
-/* On desktop/tablets, emulate a phone screen */
 @media (min-width: 501px) {
     body {
-        background-color: #f8f9fa; /* Bootstrap light gray */
+        background-color: #f8f9fa;
     }
     .app-wrapper {
         max-width: 500px;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Bootstrap shadow */
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     }
 }
 
@@ -27,12 +27,13 @@ body, html {
     font-weight: bold;
 }
 
-#header { font-size: 2rem; }
+#header { font-size: 3rem; }
 #footer { font-size: 1.5rem; }
 
-/* Responsive adjustments */
+#final-points { font-size: 6rem; }
+
 @media (min-width: 501px) {
-    #header { font-size: 3rem; }
+    #header { font-size: 4rem; }
     #footer { font-size: 2.5rem; }
 }
 
@@ -45,7 +46,7 @@ body, html {
 .hitbtn {
     width: 33.33%;
     height: 100%;
-    border: 1px solid rgba(0,0,0,0.1); /* Subtle borders */
+    border: 1px solid rgba(0,0,0,0.1);
     border-radius: 0 !important;
     font-size: 5rem;
     display: flex;

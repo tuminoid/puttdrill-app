@@ -30,7 +30,7 @@ class PuttDrill {
 
         const initialState = this.loadState() || this.getInitialState();
         this.state = this.createObservableState(initialState);
-        
+
         this.init();
     }
 
@@ -70,9 +70,10 @@ class PuttDrill {
         if (this.state.isGameOver) {
             this.switchView(VIEWS.RESULTS);
         } else if (this.state.round > 1 || this.state.points > 0) {
-            this.switchView(VIEWS.GAME);
+            this.render();
+            this.showGame();
         } else {
-            this.switchView(VIEWS.MENU);
+            this.showMenu();
         }
     }
 
@@ -93,8 +94,15 @@ class PuttDrill {
                 this.updateStatsUI();
             }
         });
-        
-        document.getElementById('highScoreModal').addEventListener('show.bs.modal', () => this.updateStatsUI());
+
+        const modal = document.getElementById('highScoreModal');
+        modal.addEventListener('show.bs.modal', () => this.updateStatsUI());
+        modal.addEventListener('shown.bs.modal', () => {
+            const activeItem = modal.querySelector('.list-group-item-primary');
+            if (activeItem) {
+                activeItem.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }
+        });
     }
 
     handleInput(hits) {
@@ -121,13 +129,11 @@ class PuttDrill {
     }
 
     switchView(viewName) {
-        // Toggle main areas
         Object.keys(VIEWS).forEach(key => {
             const id = VIEWS[key];
             this.ui.areas[id].classList.toggle('d-none', id !== viewName);
         });
 
-        // Toggle game metadata visibility
         const isGame = viewName === VIEWS.GAME;
         const isResults = viewName === VIEWS.RESULTS;
         this.ui.areas.header.classList.toggle('d-none', !isGame);
@@ -141,6 +147,14 @@ class PuttDrill {
         this.saveHistory();
         this.state.isGameOver = true;
         this.switchView(VIEWS.RESULTS);
+    }
+
+    showMenu() {
+        this.switchView(VIEWS.MENU);
+    }
+
+    showGame() {
+        this.switchView(VIEWS.GAME);
     }
 
     resetGame() {
@@ -175,8 +189,8 @@ class PuttDrill {
 
     formatDate(dateStr) {
         if (!dateStr) return 'N/A';
-        return new Intl.DateTimeFormat(undefined, { 
-            month: 'short', day: 'numeric', year: 'numeric' 
+        return new Intl.DateTimeFormat(undefined, {
+            month: 'short', day: 'numeric', year: 'numeric'
         }).format(new Date(dateStr));
     }
 
@@ -201,23 +215,20 @@ class PuttDrill {
         const myIndex = history.findIndex(g => g.date === this.state.completionTimestamp);
         if (myIndex === -1) return;
 
-        // Ensure we always show at least 5 items if they exist
         let start = Math.max(1, myIndex - 2);
         let end = Math.min(history.length - 1, myIndex + 2);
 
-        // Shift window if near the beginning to show 5 items total (Rank #1 + 4 neighbors)
         if (start < 4 && history.length > 5) {
             end = Math.min(history.length - 1, 4);
         }
-        
-        // Shift window if near the end
+
         if (end > history.length - 5 && history.length > 5) {
             start = Math.max(1, history.length - 5);
         }
 
         const items = [];
         items.push(this.renderGameItem(history[0], '#1', myIndex === 0));
-        
+
         for (let i = start; i <= end; i++) {
             if (i > 0) items.push(this.renderGameItem(history[i], `#${i + 1}`, i === myIndex));
         }
@@ -229,11 +240,17 @@ class PuttDrill {
         const history = this.getHistory();
         if (!history.length) return;
 
+        const currentTimestamp = this.state.completionTimestamp;
+
         const top = [...history].sort((a, b) => b.score - a.score).slice(0, 100);
-        this.ui.highScoreList.innerHTML = top.map((g, i) => this.renderGameItem(g, `${i + 1}.`)).join('');
+        this.ui.highScoreList.innerHTML = top.map((g, i) =>
+            this.renderGameItem(g, `${i + 1}.`, g.date === currentTimestamp)
+        ).join('');
 
         const all = [...history].sort((a, b) => new Date(b.date) - new Date(a.date));
-        this.ui.fullHistoryList.innerHTML = all.map(g => this.renderGameItem(g, '')).join('');
+        this.ui.fullHistoryList.innerHTML = all.map(g =>
+            this.renderGameItem(g, '', g.date === currentTimestamp)
+        ).join('');
     }
 }
 
